@@ -3,13 +3,12 @@ const { body, validationResult } = require('express-validator');
 const User = require("../models/User");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fetchuser = require("../middleware/fetchuser");
 const router = express.Router();
 
-JWT_SECRET = "thisisabdur$raining"
+JWT_SECRET = "thisisabdur$raining";
 
-
-
-// Create user using POST "/api/auth/createuser" : No Login Required
+// Endpoint 1: Create user using POST "/api/auth/createuser" : No Login Required
 router.post("/createuser", [
     body('name', 'Name must be at least 3 chars long').isLength({ min: 3 }),
     body('email', 'Not a valid email').isEmail(),
@@ -46,6 +45,7 @@ router.post("/createuser", [
                 id: user._id
             }
         };
+
         jwt.sign(payload, JWT_SECRET, { expiresIn: "5 days"},
         (err, token) =>{
             if(err) throw err;
@@ -90,10 +90,10 @@ router.post("/createuser", [
 
 
 
-// log-in user using POST "/api/auth/login"
+// Endpoint 2: log-in user using POST "/api/auth/login" : no login required
 router.post("/login", [
-    body("email").isEmail(),
-    body("password").exists()
+    body("email", "Plz enter a valid email").isEmail(),
+    body("password", "Password must not be blank").exists()
 ], async (req, res) => {
     try {
 
@@ -129,7 +129,32 @@ router.post("/login", [
 
 
 
-// logging out user
+
+
+
+
+
+
+// Endpoint 3: get logged-in user details using POST "/api/auth/userdetails" : Login required
+router.post("/userdetails", fetchuser, async (req, res) => {
+    // fetchuser is a middleware to decode user from a JWT, all endpoints that require login wil need this middleware to be called, so it is better in modular shape
+    try {
+        const userID = req.user; // gives user id
+        const user = await User.findById(userID).select("-password");
+        // console.log(userID)
+        // console.log(user)
+        res.send(user);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({error: error.message});
+    };
+
+
+    // let decodedToken = jwt.verify(req.headers['authorization'], JWT_SECRET);
+    // let userDetails =  await User.findById(decodedToken._id);
+    // return res.send(userDetails);
+})
+
 
 
 
