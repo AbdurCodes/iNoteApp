@@ -16,8 +16,8 @@ const fetchuser = (req, res, next) => {
     try {
         // Verify the token
         const data = jwt.verify(token, JWT_SECRET);
-        console.log(data)
-        console.log(data._id)
+        // console.log(data)
+        // console.log(data._id)
         // add id to request oject
         req.user = data._id;     
         next();    
