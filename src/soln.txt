@@ -1,0 +1,11 @@
+export 'Switch' (imported as 'Switch') was not found in 'react-router-dom'
+
+two methods to solve this error
+
+1. If you are using react-router-dom version V6.0.0 then it will not work, so downgrade the version of the react-router-dom to be below V6 and run
+
+npm install react-router-dom@5.2.0
+
+if you do not want to downgrade  react-router-dom version then use method 2
+
+2. Use <Routes> instead of <Switch> and the error will go away,

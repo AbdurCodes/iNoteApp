@@ -16,5 +16,5 @@ app.use("/api/notes", require("./routes/notes")); // contain endpoints for CRUD-
 
 
 app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`)
+  console.log(`Backend Listening on http://localhost:${port}`)
 })
